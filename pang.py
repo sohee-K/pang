@@ -209,7 +209,12 @@ while running:
                     })
 
                 break
-
+             
+        # 이중 for문 빠져나가기
+        else:
+            continue
+        break
+    
     # 충돌한 무기와 공 없애기
     if weapon_to_remove > -1:
         del weapons[weapon_to_remove]
