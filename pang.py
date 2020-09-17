@@ -1,5 +1,5 @@
-import pygame
 import os
+import pygame
 
 pygame.init()
 
@@ -82,9 +82,12 @@ game_font = pygame.font.Font(None, 60)
 total_time = 100
 start_ticks = pygame.time.get_ticks()
 
+# 게임 종료 메시지
+game_result = "Game Clear"
+
 # 이벤트 루프
 running = True
-while (running):
+while running:
     # FPS
     dt = clock.tick(30)
 
@@ -94,6 +97,7 @@ while (running):
         # 게임 종료
         if event.type == pygame.QUIT:
             running = False
+            break
 
         # 키 제어
         if event.type == pygame.KEYDOWN:
@@ -136,7 +140,7 @@ while (running):
         if ball_val["pos_y"] >= screen_height - stage_height - ball_height:
             ball_val["to_y"] = ball_val["init_speed_y"]
         else:
-            ball_val["to_y"] += 0.6
+            ball_val["to_y"] += 0.5
 
         # 공 위치 업데이트
         ball_val["pos_x"] += ball_val["to_x"]
@@ -157,7 +161,7 @@ while (running):
 
         # 캐릭터와 공의 충돌 처리
         if character_rect.colliderect(ball_rect):
-            print("Collide")
+            game_result = "Game Over"
             running = False
             break
 
@@ -205,7 +209,7 @@ while (running):
                     })
 
                 break
-    
+
     # 충돌한 무기와 공 없애기
     if weapon_to_remove > -1:
         del weapons[weapon_to_remove]
@@ -214,14 +218,20 @@ while (running):
         del balls[ball_to_remove]
         ball_to_remove = -1
 
+    # 공을 모두 없앤 경우
+    if len(balls) == 0:
+        running = False
+        break
+
     #경과 시간 표시
     elapsed_time = (pygame.time.get_ticks() - start_ticks) / 1000  # 초 단위
-    timer = game_font.render(str(int(total_time - elapsed_time)), True, pygame.Color("White"))
+    timer = game_font.render("TIME : {}".format(int(total_time - elapsed_time)), True, pygame.Color("White"))
 
     # 타임 오버
     if (total_time - elapsed_time) <= 0:
-        print("Time Over")
+        game_result = "Time Over"
         running = False
+        break
 
     # 화면에 불러오기
     screen.blit(background, (0, 0))
@@ -231,12 +241,18 @@ while (running):
         ball_pos_x = val["pos_x"]
         ball_pos_y = val["pos_y"]
         ball_img = ball[val["img_idx"]]
-        screen.blit(ball_img, (ball_pos_x, ball_pos_y))    
+        screen.blit(ball_img, (ball_pos_x, ball_pos_y))
     screen.blit(stage, (0, screen_height - stage_height))
     screen.blit(character, (character_pos_x, character_pos_y))
-    screen.blit(timer, (screen_width / 2, 10))
-   
+    screen.blit(timer, (10, 10))
+
     pygame.display.update()
+
+# 게임 종료 메세지 출력
+game_msg = game_font.render(game_result, True, pygame.Color("White"))
+game_msg_rect = game_msg.get_rect(center=(int(screen_width / 2), int(screen_height / 2)))
+screen.blit(game_msg, game_msg_rect)
+pygame.display.update()
 
 # pygame 종료
 pygame.time.delay(2000) # 2초 후 종료
