@@ -137,7 +137,7 @@ while running:
         # 경계값 및 속도 처리
         if ball_val["pos_x"] <= 0 or ball_val["pos_x"] >= screen_width - ball_width:
             ball_val["to_x"] = - ball_val["to_x"]
-        if ball_val["pos_y"] >= screen_height - stage_height - ball_height:
+        if ball_val["pos_y"] >= screen_height - stage_height - ball_height + 10:
             ball_val["to_y"] = ball_val["init_speed_y"]
         else:
             ball_val["to_y"] += 0.5
@@ -248,7 +248,7 @@ while running:
         ball_img = ball[val["img_idx"]]
         screen.blit(ball_img, (ball_pos_x, ball_pos_y))
     screen.blit(stage, (0, screen_height - stage_height))
-    screen.blit(character, (character_pos_x, character_pos_y))
+    screen.blit(character, (character_pos_x, character_pos_y + 10))
     screen.blit(timer, (10, 10))
 
     pygame.display.update()
